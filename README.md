@@ -18,8 +18,8 @@ pip install memorymanager
 You can also install the `memorymanager` pre-release package from TestPyPI as follows:
 ```bash
 pip install --index-url https://test.pypi.org/simple/ memorymanager
-For TestPyPI versión, `--no-deps` option is not needed because it has no dependencies.
 ```
+For TestPyPI versión, `--no-deps` option is not needed because it has no dependencies.
 ## How to use
 ### Class `Cleaner`
 ```py
