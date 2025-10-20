@@ -67,6 +67,7 @@ Update the list of flagged references like one of the following:
     ["value_1"]
     ```
 * Include again some variables:
+
     After having excluded some variables
     ```py
     cleaner.update(exclude=["value_2","value_3"])
@@ -141,4 +142,5 @@ Output:
 ```sh
 Value: 10
 Value: 20
+
 ```
