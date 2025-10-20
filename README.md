@@ -1,4 +1,4 @@
-# `memorymanager`
+# `memorymanagement`
 Provides memory management support.
 ## Modules
 ### `cleaning`
@@ -13,9 +13,9 @@ Allows functions to receive pointers instead of values.
 ## Installation
 You can install the `memorymanager` package from PyPI as follows:
 ```bash
-pip install memorymanager
+pip install memorymanagement
 ```
-You can also install the `memorymanager` pre-release package from TestPyPI as follows:
+You can also install the `memorymanager` package (Test PyPI versión of `memorymanager`) from TestPyPI as follows:
 ```bash
 pip install --index-url https://test.pypi.org/simple/ memorymanager
 ```
@@ -25,7 +25,7 @@ For TestPyPI versión, `--no-deps` option is not needed because it has no depend
 ```py
 # Imports
 # Make your imports here
-from memorymanager import Cleaner # Importing class Cleaner
+from memorymanagement import Cleaner # Importing class Cleaner
 ```
 Right after imports are done, I recommend to initialize an instance of class `Cleaner`, so no arguments are needed. This is the optimal use this class was designed for.
 ```py
@@ -93,7 +93,7 @@ cleaner.include(<name_var_1>,<name_var_2>,...)
 ### Class `Pointer`
 Example:
 ```py
-from memorymanager import Pointer
+from memorymanagement import Pointer
 a=10
 x=Pointer(a)
 print(f"a:\n{a}\n\nPointer:\n{x.value}\n\n")
@@ -128,7 +128,7 @@ Pointer:
 ### Decorator `pointerize`
 Example:
 ```py
-from memorymanager import pointerize
+from memorymanagement import pointerize
 @pointerize
 def myFunction(value:int):
     value=20
