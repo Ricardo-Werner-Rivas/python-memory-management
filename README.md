@@ -15,7 +15,7 @@ You can install the `memorymanager` package from PyPI as follows:
 ```bash
 pip install memorymanagement
 ```
-You can also install the `memorymanager` package (Test PyPI versión of `memorymanager`) from TestPyPI as follows:
+You can also install the `memorymanager` package (Test PyPI versión of `memorymanagement`) from TestPyPI as follows:
 ```bash
 pip install --index-url https://test.pypi.org/simple/ memorymanager
 ```
@@ -144,3 +144,4 @@ Value: 10
 Value: 20
 
 ```
+
