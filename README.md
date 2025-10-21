@@ -1,7 +1,8 @@
 # `memorymanagement`
 Provides memory management support.
 
-The only Python implementation currently supported is the one made by the **CPython** team. The rest are untested.
+The only Python implementation currently supported is the one made by the **CPython** team.
+The rest remain untested.
 ## Modules
 ### `cleaning`
 Provides the class `Cleaner`, which allows you to flag references stored in memory to eventually erase them.
@@ -146,6 +147,7 @@ Value: 10
 Value: 20
 
 ```
+
 
 
 
