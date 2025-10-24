@@ -14,15 +14,15 @@ The pointer itself. Imitates the behaviour of C pointers. This pointer points to
 #### Decorator `pointerize`
 Allows functions to receive pointers instead of values.
 ## Installation
-You can install the `memorymanagement` package from PyPI as follows:
+You can install the `memorymanager` package from PyPI as follows:
 ```bash
 pip install memorymanagement
 ```
-You also can install the `memorymanager` package (Test PyPI versión of `memorymanagement`) from TestPyPI as follows:
+You also can install the development version from TestPyPI as follows:
 ```bash
-pip install --index-url https://test.pypi.org/simple/ memorymanager
+pip install --index-url https://test.pypi.org/simple/ memorymanagement
 ```
-For TestPyPI versión, `--no-deps` option is not needed because the package has no dependencies.
+For TestPyPI versión, `--no-deps` option is not needed because it has no dependencies.
 ## How to use
 ### Class `Cleaner`
 ```py
@@ -147,8 +147,6 @@ Value: 10
 Value: 20
 
 ```
-
-
 
 
 
