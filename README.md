@@ -22,7 +22,7 @@ You also can install the `memorymanager` package (Test PyPI versión of `memorym
 ```bash
 pip install --index-url https://test.pypi.org/simple/ memorymanager
 ```
-For TestPyPI versión, `--no-deps` option is not needed because it has no dependencies.
+For TestPyPI versión, `--no-deps` option is not needed because the package has no dependencies.
 ## How to use
 ### Class `Cleaner`
 ```py
@@ -147,6 +147,7 @@ Value: 10
 Value: 20
 
 ```
+
 
 
 
