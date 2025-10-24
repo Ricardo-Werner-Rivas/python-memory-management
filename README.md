@@ -14,7 +14,7 @@ The pointer itself. Imitates the behaviour of C pointers. This pointer points to
 #### Decorator `pointerize`
 Allows functions to receive pointers instead of values.
 ## Installation
-You can install the `memorymanager` package from PyPI as follows:
+You can install the `memorymanagement` package from PyPI as follows:
 ```bash
 pip install memorymanagement
 ```
