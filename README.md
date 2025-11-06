@@ -14,8 +14,8 @@ The pointer itself. Imitates the behaviour of C pointers. This pointer points to
 #### Decorator `pointerize`
 Allows functions to receive pointers instead of values.
 ## Installation
-You can install the development version of the `memorymanagement` package from TestPyPI as follows:
-```ps
+You can install the development version of the `memorymanagement` package from **TestPyPI** as follows:
+```powershell
 pip install --index-url https://test.pypi.org/simple/ memorymanagement
 ```
 For TestPyPI version, `--no-deps` option is not needed because it has no dependencies.
