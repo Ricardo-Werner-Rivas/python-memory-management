@@ -146,7 +146,7 @@ Value: 20
 ## Contribution
 To contribute to this project, clone or fork this repository.
 
-There are to branches:
+There are two branches:
 * PyPI: the main branch, for releases.
 * TestPyPI: for pre-releases or development versions.
 
