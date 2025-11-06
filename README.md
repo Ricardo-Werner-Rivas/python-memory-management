@@ -10,7 +10,7 @@ It is also possible to modify the list of flagged references through its methods
 ### `pointers`
 Provides a safe implementation of pointers for Python.
 #### Class `Pointer`
-The pointer itself. Imitates the behaviour of C pointers. This pointer points to a reference, not to an object stored in memory.
+The pointer itself. Imitates the behaviour of C pointers. `Pointer` points to a **reference**, not to an object stored in memory.
 #### Decorator `pointerize`
 Allows functions to receive pointers instead of values.
 ## Installation
