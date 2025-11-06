@@ -129,3 +129,14 @@ class Cleaner:
                 del vars(modules["__main__"])[var]
         self._flagged.clear()
         return
+    def __str__(self):
+        string=f"""
+        Flagged: {self.flagged}
+        
+        Excluded: {self.excluded}
+        
+        Not delete: {self.not_delete}
+        """
+        return string
+    def __repr__(self):
+        return f"{self.__class__.__name__}(flagged={self.flagged})"

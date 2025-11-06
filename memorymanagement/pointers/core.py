@@ -125,3 +125,15 @@ class Pointer(Generic[object_type]):
             if self._name:
                 del self._vars_dict[self._name]
         return
+    def __getitem__(self,index):
+        return self.value[index]
+    def __setitem__(self,index,value):
+        self.value[index]=value
+        return
+    def __delitem__(self,index):
+        del self.value[index]
+        return
+    def __str__(self):
+        return str(self.value)
+    def __repr__(self):
+        return f"{self.__class__.__name__}({self.value})"
