@@ -147,7 +147,7 @@ Value: 20
 To contribute to this project fork this repository and clone your fork. Pull requests will be revised by the owner before being accepted or rejected.
 
 There are two branches:
-* PyPI: the main branch, for releases.
-* TestPyPI: for pre-releases or development versions.
+* **PyPI**: the main branch, for releases.
+* **TestPyPI**: for pre-releases or development versions.
 
 Pull requests from TestPyPI to PyPI will only be done by the owner when a new release is ready.
