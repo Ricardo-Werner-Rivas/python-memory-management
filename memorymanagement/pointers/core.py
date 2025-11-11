@@ -209,6 +209,12 @@ class Pointer(Generic[TypeVar("object_type")]):
     def __rpow__(self,value):
         return value**self.value
     
+    #* IN-PLACE ARITHMETIC METHODS
+    # Addition
+    def __iadd__(self,value):
+        self.value=self.value+value
+    # Difference
+    
     #* COMPARATIVE METHODS
     # Equality
     def __eq__(self,value):
