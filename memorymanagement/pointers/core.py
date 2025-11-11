@@ -5,10 +5,8 @@ from sys import modules
 # Import "currentframe" from "inspect" package
 from inspect import currentframe
 
-# Create new generic type
-object_type=TypeVar("object_type")
-# Define the class "Pointer"
-class Pointer(Generic[object_type]):
+# Define the class "Pointer" with generic type
+class Pointer(Generic[TypeVar("object_type")]):
     """
     Implements pointers in Python for both mutable (though unneded) and non-mutable objects.
     These pointers are completely safe and do not work internally as C's pointers, they are just an imitation of their behaviour.
@@ -210,6 +208,44 @@ class Pointer(Generic[object_type]):
     # Power
     def __rpow__(self,value):
         return value**self.value
+    
+    #* COMPARATIVE METHODS
+    # Equality
+    def __eq__(self,value):
+        if isinstance(value,Pointer):
+            return self.value==value.value
+        else:
+            return self.value==value
+    # Inequality
+    def __ne__(self,value):
+        if isinstance(value,Pointer):
+            return self.value!=value.value
+        else:
+            return self.value!=value
+    # Lower than
+    def __lt__(self,value):
+        if isinstance(value,Pointer):
+            return self.value<value.value
+        else:
+            return self.value<value
+    # Lower or equal
+    def __le__(self,value):
+        if isinstance(value,Pointer):
+            return self.value<=value.value
+        else:
+            return self.value<=value
+    # Greater than
+    def __gt__(self,value):
+        if isinstance(value,Pointer):
+            return self.value>value.value
+        else:
+            return self.value>value
+    # Greater or equal
+    def __ge__(self,value):
+        if isinstance(value,Pointer):
+            return self.value>=value.value
+        else:
+            return self.value>=value
     
     #* SCREEN
     # Representation
