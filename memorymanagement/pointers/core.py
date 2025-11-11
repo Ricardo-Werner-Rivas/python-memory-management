@@ -247,6 +247,17 @@ class Pointer(Generic[TypeVar("object_type")]):
         else:
             return self.value>=value
     
+    #* UNARY METHODS
+    # Negative
+    def __neg__(self):
+        return Pointer(-self.value)
+    # Positive
+    def __pos__(self):
+        return Pointer(+self.value)
+    # Absolute value
+    def __abs__(self):
+        return Pointer(abs(self.value))
+    
     #* LENGTH
     # Length
     def __len__(self):
