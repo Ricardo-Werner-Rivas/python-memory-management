@@ -247,6 +247,11 @@ class Pointer(Generic[TypeVar("object_type")]):
         else:
             return self.value>=value
     
+    #* LENGTH
+    # Length
+    def __len__(self):
+        return len(self.value)
+    
     #* SCREEN
     # Representation
     def __repr__(self):
