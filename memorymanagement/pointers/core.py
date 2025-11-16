@@ -1,3 +1,10 @@
+#* LEGEND
+#! Missing
+#* Section
+#^ Important
+#// Alternative or deprecated code
+
+#* IMPORTS
 # Import "TypeVar" and "Generic"
 from typing import TypeVar,Generic
 # Import "modules" from "sys" package
@@ -5,6 +12,7 @@ from sys import modules
 # Import "currentframe" from "inspect" package
 from inspect import currentframe
 
+#* MAIN CLASS
 # Define the class "Pointer" with generic type
 class Pointer(Generic[TypeVar("object_type")]):
     """
@@ -291,6 +299,13 @@ class Pointer(Generic[TypeVar("object_type")]):
     # Length
     def __len__(self):
         return len(self.value)
+    
+    #* TRANSFORMATION METHODS
+    # __int__
+    def __int__(self):
+        return int(self.value)
+    def __float__(self):
+        return float(self.value)
     
     #* SCREEN
     # Representation
