@@ -1,3 +1,10 @@
+#* LEGEND
+#! Missing
+#* Section
+#^ Important
+#// Alternative or deprecated code
+
+#* IMPORTS
 # Import "TypeVar" and "Generic"
 from typing import TypeVar,Generic
 # Import "modules" from "sys" package
@@ -5,10 +12,9 @@ from sys import modules
 # Import "currentframe" from "inspect" package
 from inspect import currentframe
 
-# Create new generic type
-object_type=TypeVar("object_type")
-# Define the class "Pointer"
-class Pointer(Generic[object_type]):
+#* MAIN CLASS
+# Define the class "Pointer" with generic type
+class Pointer(Generic[TypeVar("object_type")]):
     """
     Implements pointers in Python for both mutable (though unneded) and non-mutable objects.
     These pointers are completely safe and do not work internally as C's pointers, they are just an imitation of their behaviour.
@@ -66,7 +72,6 @@ class Pointer(Generic[object_type]):
         self._value=value
         self._vars_dict=vars_dict
         self._attr=attr
-        name=None
         name=[]
         for key,v in vars_dict.items():
             try:
@@ -90,7 +95,11 @@ class Pointer(Generic[object_type]):
             name=None
         self._name=name
         return
+    
+    #* PROPERTIES
+    # Value
     @property
+    # Getter
     def value(self):
         if self._attr:
             if self._name and self._name not in list(self._vars_dict):
@@ -107,6 +116,7 @@ class Pointer(Generic[object_type]):
                 if self._value is not self._vars_dict[self._name]:
                     self._value=self._vars_dict[self._name]
             return self._value
+    # Setter
     @value.setter
     def value(self,value):
         if self._attr:
@@ -116,6 +126,7 @@ class Pointer(Generic[object_type]):
             if self._name and value is not self._vars_dict[self._name]:
                 self._vars_dict[self._name]=value
         return
+    # Deleter
     @value.deleter
     def value(self):
         if self._attr:
@@ -125,15 +136,184 @@ class Pointer(Generic[object_type]):
             if self._name:
                 del self._vars_dict[self._name]
         return
+    
+    #* INDEXATION
+    # Getter
     def __getitem__(self,index):
         return self.value[index]
+    # Setter
     def __setitem__(self,index,value):
         self.value[index]=value
         return
+    # Deleter
     def __delitem__(self,index):
         del self.value[index]
         return
-    def __str__(self):
-        return str(self.value)
+    
+    #* ARITHMETIC OPERATIONS
+    # Addition
+    def __add__(self,value):
+        if isinstance(value,Pointer):
+            return self.value+value.value
+        else:
+            return self.value+value
+    # Difference
+    def __sub__(self,value):
+        if isinstance(value,Pointer):
+            return self.value-value.value
+        else:
+            return self.value-value
+    # Multiplication
+    def __mul__(self,value):
+        if isinstance(value,Pointer):
+            return self.value*value.value
+        else:
+            return self.value*value
+    # Fraction
+    def __truediv__(self,value):
+        if isinstance(value,Pointer):
+            return self.value/value.value
+        else:
+            return self.value/value
+    # Integer division
+    def __floordiv__(self,value):
+        if isinstance(value,Pointer):
+            return self.value//value.value
+        else:
+            return self.value//value
+    # Module
+    def __mod__(self,value):
+        if isinstance(value,Pointer):
+            return self.value%value.value
+        else:
+            return self.value%value
+    # Power
+    def __pow__(self,value):
+        if isinstance(value,Pointer):
+            return self.value**value.value
+        else:
+            return self.value**value
+    
+    #* REFLEXED ARITHMETIC METHODS
+    # Addition
+    def __radd__(self,value):
+        return value+self.value
+    # Difference
+    def __rsub__(self,value):
+        return value-self.value
+    # Multiplication
+    def __rmul__(self,value):
+        return value*self.value
+    # Fraction
+    def __rtruediv__(self,value):
+        return value/self.value
+    # Integer division
+    def __rfloordiv__(self,value):
+        return value//self.value
+    # Module
+    def __rmod__(self,value):
+        return value%self.value
+    # Power
+    def __rpow__(self,value):
+        return value**self.value
+    
+    #* IN-PLACE ARITHMETIC METHODS
+    # Addition
+    def __iadd__(self,value):
+        self.value=self.value+value
+        return self
+    # Difference
+    def __isub__(self,value):
+        self.value=self.value-value
+        return self
+    # Multiplication
+    def __imul__(self,value):
+        self.value=self.value*value
+        return self
+    # Fraction
+    def __itruediv__(self,value):
+        self.value=self.value/value
+        return self
+    # Integer division
+    def __ifloordiv__(self,value):
+        self.value=self.value//value
+        return self
+    # Module
+    def __imod__(self,value):
+        self.value=self.value%value
+        return self
+    def __ipow__(self,value):
+        self.value=self.value**value
+        return self
+    
+    #* COMPARATIVE METHODS
+    # Equality
+    def __eq__(self,value):
+        if isinstance(value,Pointer):
+            return self.value==value.value
+        else:
+            return self.value==value
+    # Inequality
+    def __ne__(self,value):
+        if isinstance(value,Pointer):
+            return self.value!=value.value
+        else:
+            return self.value!=value
+    # Lower than
+    def __lt__(self,value):
+        if isinstance(value,Pointer):
+            return self.value<value.value
+        else:
+            return self.value<value
+    # Lower or equal
+    def __le__(self,value):
+        if isinstance(value,Pointer):
+            return self.value<=value.value
+        else:
+            return self.value<=value
+    # Greater than
+    def __gt__(self,value):
+        if isinstance(value,Pointer):
+            return self.value>value.value
+        else:
+            return self.value>value
+    # Greater or equal
+    def __ge__(self,value):
+        if isinstance(value,Pointer):
+            return self.value>=value.value
+        else:
+            return self.value>=value
+    
+    #* UNARY METHODS
+    # Negative
+    def __neg__(self):
+        return Pointer(-self.value)
+    # Positive
+    def __pos__(self):
+        return Pointer(+self.value)
+    # Absolute value
+    def __abs__(self):
+        return Pointer(abs(self.value))
+    
+    #* LENGTH
+    # Length
+    def __len__(self):
+        return len(self.value)
+    
+    #* TRANSFORMATION METHODS
+    # __int__
+    def __int__(self):
+        return int(self.value)
+    def __float__(self):
+        return float(self.value)
+    
+    #* SCREEN
+    # Representation
     def __repr__(self):
         return f"{self.__class__.__name__}({self.value})"
+    # HTML representation
+    def _repr_html_(self):
+        return f"<p>{self.value}</p>"
+    # Printing
+    def __str__(self):
+        return str(self.value)
