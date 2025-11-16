@@ -306,6 +306,8 @@ class Pointer(Generic[TypeVar("object_type")]):
         return int(self.value)
     def __float__(self):
         return float(self.value)
+    def __index__(self):
+        return self.value
     
     #* SCREEN
     # Representation
