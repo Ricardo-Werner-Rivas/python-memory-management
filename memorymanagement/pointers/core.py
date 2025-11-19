@@ -1,8 +1,14 @@
+#*===============================================================================================================================
 #* LEGEND
 #! Missing
+#? Question
 #* Section
 #^ Important
+# Normal comment
 #// Alternative or deprecated code
+#*===============================================================================================================================
+
+#^ The different types of comments require the "Colorful Comments Refreshed" extension for VSCode to be properly distinguished
 
 #* IMPORTS
 # Import "TypeVar" and "Generic"
@@ -14,7 +20,7 @@ from inspect import currentframe
 
 #* MAIN CLASS
 # Define the class "Pointer" with generic type
-class Pointer(Generic[TypeVar("object_type")]):
+class Pointer(Generic[TypeVar("Any")]):
     """
     Implements pointers in Python for both mutable (though unneded) and non-mutable objects.
     These pointers are completely safe and do not work internally as C's pointers, they are just an imitation of their behaviour.
@@ -306,6 +312,8 @@ class Pointer(Generic[TypeVar("object_type")]):
         return int(self.value)
     def __float__(self):
         return float(self.value)
+    def __index__(self):
+        return self.value
     
     #* SCREEN
     # Representation
