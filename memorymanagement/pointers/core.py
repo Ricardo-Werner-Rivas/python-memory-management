@@ -1,6 +1,7 @@
 #*===============================================================================================================================
 #* LEGEND
 #! Missing
+#? Question
 #* Section
 #^ Important
 # Normal comment
@@ -19,7 +20,7 @@ from inspect import currentframe
 
 #* MAIN CLASS
 # Define the class "Pointer" with generic type
-class Pointer(Generic[TypeVar("object_type")]):
+class Pointer(Generic[TypeVar("Any")]):
     """
     Implements pointers in Python for both mutable (though unneded) and non-mutable objects.
     These pointers are completely safe and do not work internally as C's pointers, they are just an imitation of their behaviour.
