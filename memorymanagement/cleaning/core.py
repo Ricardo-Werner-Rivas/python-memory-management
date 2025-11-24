@@ -125,7 +125,7 @@ class Cleaner:
         Culminates the cleaning process. Erases all the flagged references.
         """
         for var in self._flagged:
-            if var in list(vars(modules["__main__"])):
+            if var in list(vars(modules["__main__"])) and not isinstance(vars(modules["__main__"])[var],Cleaner):
                 del vars(modules["__main__"])[var]
         self._flagged.clear()
         return
