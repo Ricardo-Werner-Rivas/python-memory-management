@@ -61,7 +61,6 @@ class Cleaner:
         self._not_delete=not_delete.copy()
         self._excluded=excluded.copy()
         self._flagged=flagged.copy()
-        return
     def update(self,exclude:str|list[str]|tuple[str]|None=None,include:str|list[str]|tuple[str]|None=None):
         """
         Flags all the new global variables' references that were not manually excluded here or before. You can also include previously excluded references.
@@ -84,7 +83,10 @@ class Cleaner:
                 while var in self._excluded:
                     self._excluded.remove(var)
         self._flagged=[var for var in list(vars(modules["__main__"])) if var not in self._not_delete and var not in self._excluded]
-        return
+        for var in self._flagged.copy():
+            if isinstance(vars(modules["__main__"])[var],Cleaner):
+                self._flagged.remove(var)
+                self._not_delete.append(var)
     @property
     def not_delete(self):
         return self._not_delete
@@ -107,7 +109,6 @@ class Cleaner:
                 self._flagged.remove(var)
             if var not in self._excluded:
                 self._excluded.append(var)
-        return
     def include(self,*include:str):
         """
         Allows to include the desired references (previously excluded) in the cleaning process.
@@ -121,16 +122,14 @@ class Cleaner:
                 self._flagged.append(var)
             while var in self._excluded:
                 self._excluded.remove(var)
-        return
     def clean(self):
         """
         Culminates the cleaning process. Erases all the flagged references.
         """
         for var in self._flagged:
-            if var in list(vars(modules["__main__"])) and not isinstance(vars(modules["__main__"])[var],Cleaner):
+            if var in list(vars(modules["__main__"])):
                 del vars(modules["__main__"])[var]
         self._flagged.clear()
-        return
     def __str__(self):
         string=f"""
         Flagged: {self.flagged}
