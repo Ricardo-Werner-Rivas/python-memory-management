@@ -42,7 +42,7 @@ class Cleaner:
         Returns the list of variables to be erased from memory.
     None of this properties has setter or deleter. Those lists can only be manipulated through the class methods.
     """
-    def __init__(self,not_delete:list[str]=list(vars(modules["__main__"])),excluded:list[str]=[],flagged:list[str]=[]):
+    def __init__(self,not_delete:list[str]|None=None,excluded:list[str]=[],flagged:list[str]=[]):
         """
         Initializes the class instance.\n
         It is recommended to initialize the instance right after all global imports at the beggining of the program so no argument is needed.
@@ -53,6 +53,8 @@ class Cleaner:
             excluded (`list[str]`, Optional): List of variables to be excluded from the memory cleaning process. Empty list by default.
             flagged (`list[str]`, Optional): List of variables to be erased from memory. Empty list by default.
         """
+        if not not_delete:
+            not_delete=list(vars(modules["__main__"]))
         for key,value in vars(modules["__main__"]).copy().items():
             if isinstance(value,Cleaner) and key in vars(modules["__main__"]).keys():
                 del vars(modules["__main__"])[key]
