@@ -19,6 +19,7 @@ class Cleaner:
             These mainly are variables needed for the system to work and imports.
         _excluded (`list[str]`, Hidden): List of variables excluded from the memory cleaning that can be included again if desired.
         _flagged (`list[str]`, Hidden): List of variables to erase from memory. Variables can be put in and/or taken out through methods.
+        _name (`str`, Hidden): Name of the variable referencing the `Cleaner` object. Only for internal purposes.
     ---
     
     ## Methods
@@ -61,6 +62,7 @@ class Cleaner:
         self._not_delete=not_delete.copy()
         self._excluded=excluded.copy()
         self._flagged=flagged.copy()
+        self._name=None
     def update(self,exclude:str|list[str]|tuple[str]|None=None,include:str|list[str]|tuple[str]|None=None):
         """
         Flags all the new global variables' references that were not manually excluded here or before. You can also include previously excluded references.
@@ -85,8 +87,11 @@ class Cleaner:
         self._flagged=[var for var in list(vars(modules["__main__"]))if var not in self.not_delete and var not in self.excluded]
     @property
     def not_delete(self):
-        if list(vars(modules["__main__"]))[list(vars(modules["__main__"]).values()).index(self)] not in self._not_delete:
-            self._not_delete.append(list(vars(modules["__main__"]))[list(vars(modules["__main__"]).values()).index(self)])
+        if not self._name:
+            for key,value in vars(modules["__main__"]).items():
+                if value is self:
+                    self._name=key
+                    break
         return self._not_delete
     @property
     def excluded(self):
