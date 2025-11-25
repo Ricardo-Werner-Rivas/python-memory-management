@@ -82,13 +82,11 @@ class Cleaner:
             for var in include:
                 while var in self._excluded:
                     self._excluded.remove(var)
-        self._flagged=[var for var in list(vars(modules["__main__"])) if var not in self._not_delete and var not in self._excluded]
-        for var in self._flagged.copy():
-            if isinstance(vars(modules["__main__"])[var],Cleaner):
-                self._flagged.remove(var)
-                self._not_delete.append(var)
+        self._flagged=[var for var in list(vars(modules["__main__"]))if var not in self.not_delete and var not in self.excluded]
     @property
     def not_delete(self):
+        if list(vars(modules["__main__"]))[list(vars(modules["__main__"]).values()).index(self)] not in self._not_delete:
+            self._not_delete.append(list(vars(modules["__main__"]))[list(vars(modules["__main__"]).values()).index(self)])
         return self._not_delete
     @property
     def excluded(self):
@@ -140,4 +138,4 @@ class Cleaner:
         """
         return string
     def __repr__(self):
-        return f"{self.__class__.__name__}(flagged={self.flagged})"
+        return f"{self.__class__.__name__}(not_delete={self.not_delete},excluded={self.excluded},flagged={self.flagged})"
