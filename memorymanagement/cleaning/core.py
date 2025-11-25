@@ -82,11 +82,10 @@ class Cleaner:
             for var in include:
                 while var in self._excluded:
                     self._excluded.remove(var)
-        self._flagged=[var for var in list(vars(modules["__main__"])) if var not in self._not_delete and var not in self._excluded]
-        for var in self._flagged.copy():
-            if isinstance(vars(modules["__main__"])[var],Cleaner):
-                self._flagged.remove(var)
-                self._not_delete.append(var)
+        self._flagged=[
+            var for var in list(vars(modules["__main__"]))
+            if var not in self._not_delete and var not in self._excluded and vars(modules["__main__"])[var] is not self
+        ]
     @property
     def not_delete(self):
         return self._not_delete
