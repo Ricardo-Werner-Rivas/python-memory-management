@@ -46,15 +46,17 @@ class Pointer(Generic[TypeVar("Any")]):
     ---
     
     ## Methods
-        1. **Getter**: Gets the value.
-        2. **Setter**: Sets a new value.
-        3. **Deleter**: Deletes the value.
-    All three methods are part of the same property.
+        1. **Value getter**: Gets the value.
+        2. **Value setter**: Sets a new value.
+        3. **Value deleter**: Deletes the value.
+        4. **Reference getter**: Gets the pointed reference
+        5. **Reference setter**: Changes the pointed reference
     ---
     ## Properties
         :value: *`MethodType`*
         Points to `value` (or `value.attr`). Called through `<instance>.value`. All three possible objects (getter, setter and deleter) have been declared.
-    
+        :reference: *`MethodType`*
+        Pointed reference. Called through `<instance>.reference`. Deleter **not** defined.
     ---
     
     ## Currently supported
@@ -65,10 +67,11 @@ class Pointer(Generic[TypeVar("Any")]):
     Currently, the only use for inserting a literal instead of a referenced value could be for the class code to display all the references pointing to that literal
     and bind the instance to the desired reference.
     """
-    def __init__(self,value=None,attr:str|None=None,*,local:bool=False):
+    def __init__(self,value=None,reference:str|None=None,*,attr:str|None=None,local:bool=False):
         """
         Arguments:
-            value (`Any`,Optional): Object to point to. If want to point to a class instance atribute, introduce the class instance without the atribute.
+            value (`Any`, Optional): Object to point to. If want to point to a class instance atribute, introduce the class instance without the atribute.
+            reference (`str`|`None`, Optional): Reference to point to. Useful in case there are multiple references pointing to the same value.
             attr (`str`|`None`, Optional): Atribute of the class instance to which you want to point. Leave empty if `value` is not a class instance.
             local (`bool`, Optional): Indicates if the value to point to is a local variable (`True` for yes and `False` for no). `False` by default.
         """
@@ -79,29 +82,32 @@ class Pointer(Generic[TypeVar("Any")]):
         self._value=value
         self._vars_dict=vars_dict
         self._attr=attr
-        name=[]
-        for key,v in vars_dict.items():
-            try:
-                if v is value:
-                    name.append(key)
-            except ValueError:
-                pass
-        if len(name)>1:
-            print(f"{name}\nMultiple variable names found for the 'value' parameter, introduce the correct one:")
-            while True:
-                name_aux=input()
-                if name_aux in name:
-                    break
-                else:
-                    print("Error, introduce the correct variable name for the 'value' parameter:")
-            name=name_aux
-            del name_aux
-        elif len(name)==1:
-            name=name[0]
-        elif len(name)==0:
-            name=None
+        if reference:
+            name=reference
+        else:
+            name=[]
+            for key,v in vars_dict.items():
+                try:
+                    if v is value:
+                        name.append(key)
+                except ValueError:
+                    pass
+            if len(name)>1:
+                print(f"{name}\nMultiple references found for the \"value\" parameter. First one was chosen")
+                name=name[0]
+                #// while True:
+                #//     name_aux=input()
+                #//     if name_aux in name:
+                #//         break
+                #//     else:
+                #//         print("Error, introduce the correct variable name for the 'value' parameter:")
+                #// name=name_aux
+                #// del name_aux
+            elif len(name)==1:
+                name=name[0]
+            elif len(name)==0:
+                name=None
         self._name=name
-        return
     
     #* PROPERTIES
     # Value
@@ -109,6 +115,7 @@ class Pointer(Generic[TypeVar("Any")]):
     # Getter
     def value(self):
         if self._attr:
+            #? Take name checking out in favor of the reference property
             if self._name and self._name not in list(self._vars_dict):
                 del self._value,self._attr
                 raise KeyError("The class instance has already been deleted, so the pointer no longer has access to it.")
@@ -132,7 +139,6 @@ class Pointer(Generic[TypeVar("Any")]):
             self._value=value
             if self._name and value is not self._vars_dict[self._name]:
                 self._vars_dict[self._name]=value
-        return
     # Deleter
     @value.deleter
     def value(self):
@@ -142,7 +148,23 @@ class Pointer(Generic[TypeVar("Any")]):
             del self._value
             if self._name:
                 del self._vars_dict[self._name]
-        return
+    
+    # Reference
+    @property
+    # Getter
+    def reference(self):
+        #? Raise error if reference was already purged
+        return self._name
+    # Setter
+    @reference.setter
+    def reference(self,var_name):
+        if var_name not in self._vars_dict:
+            raise ValueError(f"Reference \"{var_name}\" not in enviroment variables")
+        elif self._vars_dict[var_name] is not self.value:
+            raise ValueError(f"Reference \"{var_name}\" doesn't point to pointer value ({self.value})")
+        else:
+            self._name=var_name
+    #^ No deleter
     
     #* INDEXATION
     # Getter
