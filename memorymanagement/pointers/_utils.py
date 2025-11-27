@@ -3,7 +3,16 @@ This hidden module provides useful functions for the pointers' implementation
 """
 #* FUNCTIONS
 # Reference finder
-def ref_finder(value,vars_dict:dict[str,])->str:
+def ref_finder(value,vars_dict:dict[str,])->list:
+    """
+    Prints all the references pointing to the passed value.\n
+    ---
+    Arguments:
+        value (`Any`): Value to track
+        vars_dict (`dict[str,Any]`): Dictionary of variables of the desired enviroment
+    Returns:
+        list: List of references pointing to the given value
+    """
     name=[]
     for key,v in vars_dict.items():
         try:
@@ -19,4 +28,4 @@ def ref_finder(value,vars_dict:dict[str,])->str:
                 Include the following error message in your report: \"{excep}\"
                 """
             ) from None
-    return name
+    return [None] if len(name)==0 else name
