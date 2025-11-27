@@ -2,6 +2,7 @@
 #* LEGEND
 #*-------------------------------------------------------------------------------------------------------------------------------
 #! Missing
+#& Missing unimportant
 #? Question
 #* Section
 #^ Important
@@ -18,10 +19,12 @@ from typing import TypeVar,Generic
 from sys import modules
 # Import "currentframe" from "inspect" package
 from inspect import currentframe
+from _utils import ref_finder
 
 #* MAIN CLASS
 # Define the class "Pointer" with generic type
 class Pointer(Generic[TypeVar("Any")]):
+    #& Missing code comments
     """
     Implements pointers in Python for both mutable (though unneded) and non-mutable objects.
     These pointers are completely safe and do not work internally as C's pointers, they are just an imitation of their behaviour.
@@ -31,10 +34,10 @@ class Pointer(Generic[TypeVar("Any")]):
     
     Non-mutable objects still change their memory adresses when re-referenced but the reference and the value stored in the pointer are forced to share memory adress.
     
-    Value and memory adress updates are not made in real-time, but the methods update the non-coincident values:
-        * **Getter**: it updates its own value to the variable's one (if variable was given instead of literal).
-        * **Setter**: it updates the value of the variable to its own (if variable was given instead of literal).
-        * **Deleter**: it also deletes the original variable (if variable was given instead of literal).
+    Value and memory adress updates are not made in real-time, but the properties update the non-coincident values:
+    * **Getter**: it updates its own value to the variable's one (if variable was given instead of literal).
+    * **Setter**: it updates the value of the variable to its own (if variable was given instead of literal).
+    * **Deleter**: it also deletes the original variable (if variable was given instead of literal).
     ---
     Attributes:
         value (`Any`, Hidden): Object to point to.
@@ -42,23 +45,21 @@ class Pointer(Generic[TypeVar("Any")]):
         name (`str`, Hidden): Name of the global variable to which the pointer is pointing.
             Could require an input from the user to introduce the name of the variable if more than one is found.
         vars_dict (`dict[str,Any]`, Hidden): Dictionary of variables.
-            `vars(modules["__main__"])` if pointing to a global variable and `inspect.currentframe().f_back.f_locals` if pointing to a local variable.
+            `vars(modules["__main__"])` if pointing to a global variable and `inspect.currentframe().f_back.f_locals` if pointing to a local variable.\n
     ---
-    
     ## Methods
-        1. **Value getter**: Gets the value.
-        2. **Value setter**: Sets a new value.
-        3. **Value deleter**: Deletes the value.
-        4. **Reference getter**: Gets the pointed reference
-        5. **Reference setter**: Changes the pointed reference
+    * `point_to`: Changes the variable or attribute the pointer is pointed to.
+    * `switch_ref`: Allows to switch between the references pointing to the same value.
+    * `print_refs`: Prints all the references pointing to the value.
     ---
-    ## Properties
-        :value: *`MethodType`*
-        Points to `value` (or `value.attr`). Called through `<instance>.value`. All three possible objects (getter, setter and deleter) have been declared.
-        :reference: *`MethodType`*
-        Pointed reference. Called through `<instance>.reference`. Deleter **not** defined.
+    ## Properties\n
+    :value: *`MethodType`*\n
+        Points to `value` (or `value.attr`). Called through `<instance@Pointer>.value`. All three possible objects (getter, setter and deleter) have been declared.
+    :reference: *`MethodType`*\n
+        Pointed reference. Called through `<instance@Pointer>.reference`. **Only getter** defined.
+    :attr: *`MethodType`*\n
+        Name of the attribute of the pointed class instance. Called through `<instance@Pointer>.attr`. **Only getter** defined.\n
     ---
-    
     ## Currently supported
     Both global and local variables can be pointed at.
     
@@ -67,11 +68,13 @@ class Pointer(Generic[TypeVar("Any")]):
     Currently, the only use for inserting a literal instead of a referenced value could be for the class code to display all the references pointing to that literal
     and bind the instance to the desired reference.
     """
+    #* METHODS
+    # Constructor (__init__)
     def __init__(self,value=None,reference:str|None=None,*,attr:str|None=None,local:bool=False):
         """
         Arguments:
-            value (`Any`, Optional): Object to point to. If want to point to a class instance atribute, introduce the class instance without the atribute.
-            reference (`str`|`None`, Optional): Reference to point to. Useful in case there are multiple references pointing to the same value.
+            value (`Any`, Optional): Object to point to. If want to point to a class instance atribute, pass to this argument the class instance without the atribute.
+            reference (`str`|`None`, Optional): Name linked to the value to point to. Useful in case there are multiple references pointing to the same value.
             attr (`str`|`None`, Optional): Atribute of the class instance to which you want to point. Leave empty if `value` is not a class instance.
             local (`bool`, Optional): Indicates if the value to point to is a local variable (`True` for yes and `False` for no). `False` by default.
         """
@@ -82,32 +85,81 @@ class Pointer(Generic[TypeVar("Any")]):
         self._value=value
         self._vars_dict=vars_dict
         self._attr=attr
+        if self._attr and self._attr not in dir(self._value):
+            raise AttributeError(f"\"{attr}\" is not an attribute of \"{self._value}\"")
         if reference:
-            name=reference
+            if reference in vars_dict and vars_dict[reference] is value:
+                name=reference
+            elif reference not in vars_dict:
+                raise NameError(f"Name \"{reference}\" is not defined")
+            elif vars_dict[reference] is not value:
+                raise ValueError(f"Name \"{reference}\" doesn't point to given value ({value})")
         else:
-            name=[]
-            for key,v in vars_dict.items():
-                try:
-                    if v is value:
-                        name.append(key)
-                except ValueError:
-                    pass
-            if len(name)>1:
-                print(f"{name}\nMultiple references found for the \"value\" parameter. First one was chosen")
-                name=name[0]
-                #// while True:
-                #//     name_aux=input()
-                #//     if name_aux in name:
-                #//         break
-                #//     else:
-                #//         print("Error, introduce the correct variable name for the 'value' parameter:")
-                #// name=name_aux
-                #// del name_aux
-            elif len(name)==1:
-                name=name[0]
-            elif len(name)==0:
-                name=None
+            name=ref_finder(value,vars_dict)[0]
         self._name=name
+    
+    # Point to
+    def point_to(self,reference:str|None=None,value=None,*,attr:str|None=None):
+        """
+        Changes the address which the pointer points to\n
+        ---
+        Arguments:
+            reference (`str`|`None`, Optional): Reference pointing to the desired value. If wanted class attribute, introduce the reference for the class object
+            value (`Any`|`None`, Optional): Value to point to. If wanted class attribute, introduce just the class object
+            attr (`str`|`None`, Optional): Attribute of the class if class object was passed through `reference` or `value`
+        """
+        if not reference and not value:
+            pass
+        elif reference and value:
+            if reference in self._vars_dict and self._vars_dict[reference] is value:
+                self._name,self._value=reference,value
+                if attr:
+                    if attr in dir(self._value):
+                        self._attr=attr
+                    else:
+                        raise AttributeError(f"\"{attr}\" is not an attribute of \"{self._value}\"")
+            elif reference not in self._vars_dict:
+                raise NameError(f"Name \"{reference}\" is not defined")
+            elif self._vars_dict[reference] is not value:
+                raise ValueError(f"Name \"{reference}\" doesn't point to given value \"{value}\"")
+        elif reference:
+            if reference in self._vars_dict:
+                self._name,self._value=reference,self._vars_dict[reference]
+                if attr:
+                    if attr in dir(self._value):
+                        self._attr=attr
+                    else:
+                        raise AttributeError(f"\"{attr}\" is not an attribute of \"{self._value}\"")
+            else:
+                raise NameError(f"Name \"{reference}\" is not defined")
+        elif value:
+            self._name,self._value=ref_finder(value,self._vars_dict)[0],value
+            if attr:
+                if attr in dir(self._value):
+                    self._attr=attr
+                else:
+                    raise AttributeError(f"\"{attr}\" is not an attribute of \"{self._value}\"")
+    
+    # Switch reference
+    def switch_ref(self,reference:str):
+        """
+        Allows to switch between references pointing to the same current value of the pointer\n
+        ---
+        Arguments:
+            reference (`str`): Reference to switch the pointer to
+        """
+        if reference in self._vars_dict and self._vars_dict[reference] is not self.value:
+            raise ValueError(f"Name \"{reference}\" doesn't point to pointer's value \"{self.value}\"")
+        elif reference not in self._vars_dict:
+            raise NameError(f"Name \"{reference}\" is not defined")
+        self._name=reference
+    
+    # Print references
+    def print_refs(self):
+        """
+        Prints all the references pointing to the same current value of the pointer
+        """
+        print(ref_finder(self.value,self._vars_dict))
     
     #* PROPERTIES
     # Value
@@ -115,20 +167,19 @@ class Pointer(Generic[TypeVar("Any")]):
     # Getter
     def value(self):
         if self._attr:
-            #? Take name checking out in favor of the reference property
-            if self._name and self._name not in list(self._vars_dict):
+            if self.reference and self.reference not in list(self._vars_dict):
                 del self._value,self._attr
-                raise KeyError("The class instance has already been deleted, so the pointer no longer has access to it.")
+                raise NameError("The class instance has already been deleted, so the pointer no longer has access to it.")
             elif self._attr not in dir(self._value):
-                raise AttributeError(f"The atribute '{self._attr}' has already been deleted, so the pointer no longer has access to it.")
+                raise AttributeError(f"The atribute \"{self._attr}\" has already been deleted, so the pointer no longer has access to it.")
             return getattr(self._value,self._attr)
         else:
-            if self._name:
-                if self._name not in list(self._vars_dict):
+            if self.reference:
+                if self.reference not in list(self._vars_dict):
                     del self._value
-                    raise KeyError("The variable has already been deleted, so the pointer no longer has access to it.")
-                if self._value is not self._vars_dict[self._name]:
-                    self._value=self._vars_dict[self._name]
+                    raise NameError("The variable has already been deleted, so the pointer no longer has access to it.")
+                if self._value is not self._vars_dict[self.reference]:
+                    self._value=self._vars_dict[self.reference]
             return self._value
     # Setter
     @value.setter
@@ -137,7 +188,7 @@ class Pointer(Generic[TypeVar("Any")]):
             setattr(self._value,self._attr,value)
         else:
             self._value=value
-            if self._name and value is not self._vars_dict[self._name]:
+            if self.reference and value is not self._vars_dict[self._name]:
                 self._vars_dict[self._name]=value
     # Deleter
     @value.deleter
@@ -146,25 +197,17 @@ class Pointer(Generic[TypeVar("Any")]):
             delattr(self._value,self._attr)
         else:
             del self._value
-            if self._name:
-                del self._vars_dict[self._name]
-    
+            if self.reference:
+                del self._vars_dict[self.reference]
     # Reference
     @property
     # Getter
     def reference(self):
-        #? Raise error if reference was already purged
         return self._name
-    # Setter
-    @reference.setter
-    def reference(self,var_name):
-        if var_name not in self._vars_dict:
-            raise ValueError(f"Reference \"{var_name}\" not in enviroment variables")
-        elif self._vars_dict[var_name] is not self.value:
-            raise ValueError(f"Reference \"{var_name}\" doesn't point to pointer value ({self.value})")
-        else:
-            self._name=var_name
-    #^ No deleter
+    # Attribute
+    @property
+    def attr(self):
+        return self._attr
     
     #* INDEXATION
     # Getter
