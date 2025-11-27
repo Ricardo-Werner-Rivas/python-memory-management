@@ -1,3 +1,8 @@
+"""
+This hidden module provides useful functions for the pointers' implementation
+"""
+#* FUNCTIONS
+# Reference finder
 def ref_finder(value,vars_dict:dict[str,])->str:
     name=[]
     for key,v in vars_dict.items():
