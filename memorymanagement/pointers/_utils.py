@@ -19,11 +19,4 @@ def ref_finder(value,vars_dict:dict[str,])->str:
                 Include the following error message in your report: \"{excep}\"
                 """
             ) from None
-    if len(name)>1:
-        print(f"{name}\nMultiple references found for the \"value\" parameter. First one was chosen")
-        name=name[0]
-    elif len(name)==1:
-        name=name[0]
-    elif len(name)==0:
-        name=None
     return name
