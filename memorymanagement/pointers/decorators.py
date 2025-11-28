@@ -1,10 +1,29 @@
-# Imports
+#*===============================================================================================================================
+#* LEGEND
+#*-------------------------------------------------------------------------------------------------------------------------------
+#! Missing
+#& Missing unimportant
+#? Question
+#* Section
+#^ Important
+# Normal comment
+#// Alternative or deprecated code
+#*===============================================================================================================================
+
+#^ The different types of comments require the "Colorful Comments Refreshed" extension for VSCode to be properly distinguished
+
+#* IMPORTS
+# settrace (sys)
 from sys import settrace
+# signature (inspect)
 from inspect import signature
+# wraps (functools)
 from functools import wraps
+# Pointer (from the core of the package)
 from .core import Pointer
 
-# Define the decorator
+#* DECORATORS
+# pointerize
 def pointerize(func):
     """
     Allows the decorated function to receive pointers instead of the normally expected values.
