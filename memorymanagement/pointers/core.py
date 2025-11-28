@@ -19,7 +19,7 @@ from typing import TypeVar,Generic
 from sys import modules
 # Import "currentframe" from "inspect" package
 from inspect import currentframe
-from _utils import ref_finder
+from ._utils import ref_finder
 
 #* MAIN CLASS
 # Define the class "Pointer" with generic type
