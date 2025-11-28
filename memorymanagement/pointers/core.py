@@ -63,10 +63,10 @@ class Pointer(Generic[TypeVar("Any")]):
     ## Currently supported
     Both global and local variables can be pointed at.
     
-    Literals are **not** supported because of it being useless. If you create a `Pointer` instance for a literal and works,
-    keep in mind that it is merely by accident and it is **not** the intended use it was designed for.
-    Currently, the only use for inserting a literal instead of a referenced value could be for the class code to display all the references pointing to that literal
-    and bind the instance to the desired reference.
+    Literals are **not** supported because of it being useless. Literals do **not** work anymore.
+    The only use for introducing a literal instead of a referenced value is for the class code to bind the instance
+    to an unknown reference pointing to the given value or to display all the references pointing to the given literal
+    if there is more than one.
     """
     #* METHODS
     # Constructor (__init__)
@@ -97,6 +97,8 @@ class Pointer(Generic[TypeVar("Any")]):
         else:
             name=ref_finder(value,vars_dict)[0]
         self._name=name
+        if self._name==None:
+            raise NameError(f"No reference is pointing to given value \"{self._value}\"")
     
     # Point to
     def point_to(self,reference:str|None=None,value=None,*,attr:str|None=None):
@@ -134,6 +136,8 @@ class Pointer(Generic[TypeVar("Any")]):
                 raise NameError(f"Name \"{reference}\" is not defined")
         elif value:
             self._name,self._value=ref_finder(value,self._vars_dict)[0],value
+            if self._name==None:
+                raise NameError(f"No reference is pointing to given value \"{self._value}\"")
             if attr:
                 if attr in dir(self._value):
                     self._attr=attr
@@ -166,39 +170,37 @@ class Pointer(Generic[TypeVar("Any")]):
     @property
     # Getter
     def value(self):
-        if self._attr:
-            if self.reference and self.reference not in list(self._vars_dict):
-                del self._value,self._attr
+        if self.attr:
+            if self.reference not in self._vars_dict:
+                del self._value,self.attr
                 raise NameError("The class instance has already been deleted, so the pointer no longer has access to it.")
-            elif self._attr not in dir(self._value):
+            elif self.attr not in dir(self._value):
                 raise AttributeError(f"The atribute \"{self._attr}\" has already been deleted, so the pointer no longer has access to it.")
-            return getattr(self._value,self._attr)
+            return getattr(self._value,self.attr)
         else:
-            if self.reference:
-                if self.reference not in list(self._vars_dict):
-                    del self._value
-                    raise NameError("The variable has already been deleted, so the pointer no longer has access to it.")
-                if self._value is not self._vars_dict[self.reference]:
-                    self._value=self._vars_dict[self.reference]
+            if self.reference not in self._vars_dict:
+                del self._value
+                raise NameError("The variable has already been deleted, so the pointer no longer has access to it.")
+            if self._value is not self._vars_dict[self.reference]:
+                self._value=self._vars_dict[self.reference]
             return self._value
     # Setter
     @value.setter
     def value(self,value):
-        if self._attr:
-            setattr(self._value,self._attr,value)
+        if self.attr:
+            setattr(self._value,self.attr,value)
         else:
             self._value=value
-            if self.reference and value is not self._vars_dict[self._name]:
-                self._vars_dict[self._name]=value
+            if value is not self._vars_dict[self.reference]:
+                self._vars_dict[self.reference]=value
     # Deleter
     @value.deleter
     def value(self):
-        if self._attr:
-            delattr(self._value,self._attr)
+        if self.attr:
+            delattr(self._value,self.attr)
         else:
             del self._value
-            if self.reference:
-                del self._vars_dict[self.reference]
+            del self._vars_dict[self.reference]
     # Reference
     @property
     # Getter
@@ -387,7 +389,18 @@ class Pointer(Generic[TypeVar("Any")]):
         return f"{self.__class__.__name__}({self.value})"
     # HTML representation
     def _repr_html_(self):
-        return f"<p>{self.value}</p>"
+        return f"""
+        <table>
+            <thead>
+                <tr>
+                    <th style=\"text-align: center;\">{self.reference}</th>
+                </tr>
+            </thead>
+            <tr>
+                <td style=\"text-align: center;\">{self.value}</td>
+            </tr>
+        </table>
+        """
     # Printing
     def __str__(self):
         return str(self.value)
