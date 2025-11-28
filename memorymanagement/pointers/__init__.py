@@ -13,3 +13,4 @@ This decorator makes any function able to receive `Pointer` objects instead of t
 # Import from modules
 from .core import Pointer # Class "Pointer"
 from .decorators import pointerize # Decorator "pointerize"
+__all__=["Pointer","pointerize"]
