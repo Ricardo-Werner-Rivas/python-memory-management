@@ -1,5 +1,6 @@
 """
-This hidden module provides useful functions for the pointers' implementation
+This hidden module internally provides useful functions for the pointers' implementation.\n
+Do **NOT** import and/or use this module directly
 """
 #* FUNCTIONS
 # Reference finder
