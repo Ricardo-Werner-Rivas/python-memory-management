@@ -378,8 +378,10 @@ class Pointer(Generic[TypeVar("Any")]):
     # __int__
     def __int__(self):
         return int(self.value)
+    # __float__
     def __float__(self):
         return float(self.value)
+    # __index__
     def __index__(self):
         return self.value
     
