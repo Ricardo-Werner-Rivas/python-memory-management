@@ -6,13 +6,11 @@ class Cleaner:
     """
     Class for references management. It keeps track of the names of the global variables to be deleted and deletes them when ordered.
     
-    The cleaning process only deletes the flagged references to objects, but doesn't directly force the garbage collector to destroy the objects they are pointing to.
-    
+    The cleaning process only deletes the flagged references to objects, but doesn't directly force the garbage collector to destroy the objects they are pointing to.\n
     ---
     ## WARNING
     THERE CAN ONLY BE **ONE** CLEANER OBJECT.\n
-    Initializing a new one will delete all global references to the previous one.
-    
+    Initializing a new one will delete all global references to the previous one.\n
     ---
     Attributes:
         _not_delete (`list[str]`, Hidden): List of variables to never delete from memory. These cannot be included in the process even if ordered so.\n
@@ -21,8 +19,7 @@ class Cleaner:
         _flagged (`list[str]`, Hidden): List of variables to erase from memory. Variables can be put in and/or taken out through methods.
         _name (`str`, Hidden): Name of the variable referencing the `Cleaner` object. Only for internal purposes.
     ---
-    
-    ## Methods
+    \n## Methods
         :update: *`MethodType`*
         Updates the list of variables to erase from memory including all the new variables global variables not manually excluded.\n
             It also allows to incorporate previously excluded variables.
@@ -33,8 +30,7 @@ class Cleaner:
         :clean: *`MethodType`*
         Erases all the flagged references from memory.
     ---
-    
-    ## Properties
+    \n## Properties
         :not_delete: *`MethodType`*, *Getter*
         Returns the list of variables that shouldn't be deleted and can't be included in the cleaning process.
         :excluded: *`MethodType`*, *Getter*
@@ -46,8 +42,7 @@ class Cleaner:
     def __init__(self,not_delete:list[str]|None=None,excluded:list[str]=[],flagged:list[str]=[]):
         """
         Initializes the class instance.\n
-        It is recommended to initialize the instance right after all global imports at the beggining of the program so no argument is needed.
-        
+        It is recommended to initialize the instance right after all global imports at the beggining of the program so no argument is needed.\n
         ---
         Arguments:
             not_delete (`list[str]`, Optional): List of variables to never be deleted. It takes the list of global variables of the main module by default.
