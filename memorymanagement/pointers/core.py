@@ -103,12 +103,12 @@ class Pointer(Generic[TypeVar("Any")]):
     # Point to
     def point_to(self,reference:str|None=None,value=None,*,attr:str|None=None):
         """
-        Changes the address which the pointer points to\n
+        Changes the address which the pointer points to.\n
         ---
         Arguments:
-            reference (`str`|`None`, Optional): Reference pointing to the desired value. If wanted class attribute, introduce the reference for the class object
-            value (`Any`|`None`, Optional): Value to point to. If wanted class attribute, introduce just the class object
-            attr (`str`|`None`, Optional): Attribute of the class if class object was passed through `reference` or `value`
+            reference (`str`|`None`, Optional): Reference pointing to the desired value. If wanted class attribute, introduce the reference for the class object.
+            value (`Any`|`None`, Optional): Value to point to. If wanted class attribute, introduce just the class object.
+            attr (`str`|`None`, Optional): Attribute of the class if class object was passed through `reference` or `value`.
         """
         if not reference and not value:
             pass
@@ -147,10 +147,10 @@ class Pointer(Generic[TypeVar("Any")]):
     # Switch reference
     def switch_ref(self,reference:str):
         """
-        Allows to switch between references pointing to the same current value of the pointer\n
+        Allows to switch between references pointing to the same current value of the pointer.\n
         ---
         Arguments:
-            reference (`str`): Reference to switch the pointer to
+            reference (`str`): Reference to switch the pointer to.
         """
         if reference in self._vars_dict and self._vars_dict[reference] is not self.value:
             raise ValueError(f"Name \"{reference}\" doesn't point to pointer's value \"{self.value}\"")
@@ -161,7 +161,7 @@ class Pointer(Generic[TypeVar("Any")]):
     # Print references
     def print_refs(self):
         """
-        Prints all the references pointing to the same current value of the pointer
+        Prints all the references pointing to the same current value of the pointer.
         """
         print(ref_finder(self.value,self._vars_dict))
     
