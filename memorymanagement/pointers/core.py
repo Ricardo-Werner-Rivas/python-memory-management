@@ -20,10 +20,12 @@ from sys import modules
 # Import "currentframe" from "inspect" package
 from inspect import currentframe
 from ._utils import ref_finder
+# Define type with TypeVar
+PT=TypeVar("PT")
 
 #* MAIN CLASS
 # Define the class "Pointer" with generic type
-class Pointer(Generic[TypeVar("Any")]):
+class Pointer(Generic[PT]):
     #& Missing code comments
     """
     Implements pointers in Python for both mutable (though unneded) and non-mutable objects.
