@@ -19,7 +19,6 @@ from typing import TypeVar,Generic
 from sys import modules
 # Import "currentframe" from "inspect" package
 from inspect import currentframe
-from ._utils import ref_finder
 # Define type with TypeVar
 PT=TypeVar("PT")
 
@@ -97,7 +96,8 @@ class Pointer(Generic[PT]):
             elif vars_dict[reference] is not value:
                 raise ValueError(f"Name \"{reference}\" doesn't point to given value ({value})")
         else:
-            name=ref_finder(value,vars_dict)[0]
+            name=[key for key,v in vars_dict.items() if v is value]
+            name=name if len(name)!=0 else [None]
         self._name=name
         if self._name==None:
             raise NameError(f"No reference is pointing to given value \"{self._value}\"")
@@ -137,7 +137,8 @@ class Pointer(Generic[PT]):
             else:
                 raise NameError(f"Name \"{reference}\" is not defined")
         elif value:
-            self._name,self._value=ref_finder(value,self._vars_dict)[0],value
+            self._name,self._value=[key for key,v in self._vars_dict.items() if v is value],value
+            self._name=self._name if len(self._name)!=0 else [None]
             if self._name==None:
                 raise NameError(f"No reference is pointing to given value \"{self._value}\"")
             if attr:
@@ -165,7 +166,8 @@ class Pointer(Generic[PT]):
         """
         Prints all the references pointing to the same current value of the pointer.
         """
-        print(ref_finder(self.value,self._vars_dict))
+        refs=[key for key,v in self._vars_dict.items() if v is self._value]
+        refs=refs if len(refs)!=0 else [None]
     
     #* PROPERTIES
     # Value
