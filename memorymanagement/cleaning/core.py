@@ -88,6 +88,8 @@ class Cleaner:
                     self._name=key
                     self._not_delete.append(self._name)
                     break
+                else:
+                    self._name=None
             if not self._name:
                 raise ReferenceError("'Cleaner' object is not referenced")
         elif self._name not in self._not_delete:
