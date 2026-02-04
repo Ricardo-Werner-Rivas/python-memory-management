@@ -29,7 +29,7 @@ cleaner.update(
 )
 print(cleaner)
 ```
-The cell above prints (via `__str__` method):
+The cell above prints the following (via `__str__` method):
 ```
 Flagged: ["x","y","z"]
 
