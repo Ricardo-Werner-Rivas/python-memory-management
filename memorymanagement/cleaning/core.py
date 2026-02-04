@@ -82,11 +82,16 @@ class Cleaner:
         self._flagged=[var for var in list(vars(modules["__main__"]))if var not in self.not_delete and var not in self.excluded]
     @property
     def not_delete(self):
-        if not self._name:
+        if not self._name or vars(modules["__main__"])[self._name] is not self:
             for key,value in vars(modules["__main__"]).items():
                 if value is self:
                     self._name=key
+                    self._not_delete.append(self._name)
                     break
+            if not self._name:
+                raise ReferenceError("'Cleaner' object is not referenced")
+        elif self._name not in self._not_delete:
+            self._not_delete.append(self._name)
         return self._not_delete
     @property
     def excluded(self):
