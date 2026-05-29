@@ -30,9 +30,10 @@ def pointerize(func):
     
     The decorated function is still able to receive its normally expected parameters.
     
-    ---
-    Arguments:
-        func (`FunctionType`): Decorated function.
+    Arguments
+    ---------
+    func : `FunctionType`
+        Decorated function.
     """
     # Makes the decorating function to keep its identity
     @wraps(func)

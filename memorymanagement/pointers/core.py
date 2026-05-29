@@ -40,26 +40,44 @@ class Pointer(Generic[PT]):
     * **Setter**: it updates the value of the variable to its own (if variable was given instead of literal).
     * **Deleter**: it also deletes the original variable (if variable was given instead of literal).
     ---
-    Attributes:
-        value (`Any`, Hidden): Object to point to.
-        attr (`str`|`None`, Hidden): Attribute of class instance. Only if `value` is a class instance.
-        name (`str`, Hidden): Name of the global variable to which the pointer is pointing.
-            Could require an input from the user to introduce the name of the variable if more than one is found.
-        vars_dict (`dict[str,Any]`, Hidden): Dictionary of variables.
-            `vars(modules["__main__"])` if pointing to a global variable and `inspect.currentframe().f_back.f_locals` if pointing to a local variable.\n
-    ---
-    ## Methods
-    * `point_to`: Changes the variable or attribute the pointer is pointed to.
-    * `switch_ref`: Allows to switch between the references pointing to the same value.
-    * `print_refs`: Prints all the references pointing to the value.
-    ---
-    ## Properties\n
-    :value: *`MethodType`*\n
-        Points to `value` (or `value.attr`). Called through `<instance@Pointer>.value`. All three possible objects (getter, setter and deleter) have been declared.
-    :reference: *`MethodType`*\n
-        Pointed reference. Called through `<instance@Pointer>.reference`. **Only getter** defined.
-    :attr: *`MethodType`*\n
-        Name of the attribute of the pointed class instance. Called through `<instance@Pointer>.attr`. **Only getter** defined.\n
+    
+    Attributes
+    ----------
+    value : `Any`, Hidden
+        Object to point to.
+    attr : `str`|`None`, Hidden
+        Attribute of class instance. Only if `value` is a class instance.
+    name : `str`, Hidden
+        Name of the global variable to which the pointer is pointing.
+        Could require an input from the user to introduce the name of the variable if more than one is found.
+    vars_dict : `dict[str,Any]`, Hidden
+        Dictionary of variables.
+        `vars(modules["__main__"])` if pointing to a global variable and
+        `inspect.currentframe().f_back.f_locals` if pointing to a local variable.
+    
+    Methods
+    -------
+        **point_to**
+            Changes the variable or attribute the pointer is pointed to.
+        **switch_ref**
+            Allows to switch between the references pointing to the same value.
+        **print_refs**
+            Prints all the references pointing to the value.
+    
+    Properties
+    ----------
+        **value**
+            Points to `value` (or `value.attr`).
+            Called through `<instance@Pointer>.value`.
+            All three possible objects (getter, setter and deleter) have been declared.
+        **reference**
+            Pointed reference.
+            Called through `<instance@Pointer>.reference`.
+            **Only getter** defined.
+        **attr**
+            Name of the attribute of the pointed class instance.
+            Called through `<instance@Pointer>.attr`.
+            **Only getter** defined.
     ---
     ## Currently supported
     Both global and local variables can be pointed at.
@@ -73,11 +91,16 @@ class Pointer(Generic[PT]):
     # Constructor (__init__)
     def __init__(self,value=None,reference:str|None=None,*,attr:str|None=None,local:bool=False):
         """
-        Arguments:
-            value (`Any`, Optional): Object to point to. If want to point to a class instance atribute, pass to this argument the class instance without the atribute.
-            reference (`str`|`None`, Optional): Name linked to the value to point to. Useful in case there are multiple references pointing to the same value.
-            attr (`str`|`None`, Optional): Atribute of the class instance to which you want to point. Leave empty if `value` is not a class instance.
-            local (`bool`, Optional): Indicates if the value to point to is a local variable (`True` for yes and `False` for no). `False` by default.
+        Arguments
+        ---------
+        value : `Any`, Optional
+            Object to point to. If want to point to a class instance atribute, pass to this argument the class instance without the atribute.
+        reference : `str`|`None`, Optional
+            Name linked to the value to point to. Useful in case there are multiple references pointing to the same value.
+        attr : `str`|`None`, Optional
+            Attribute of the class instance to which you want to point. Leave empty if `value` is not a class instance.
+        local : `bool`, Optional
+            Indicates if the value to point to is a local variable (`True` for yes and `False` for no). `False` by default.
         """
         if local:
             vars_dict=currentframe().f_back.f_locals
@@ -105,12 +128,16 @@ class Pointer(Generic[PT]):
     # Point to
     def point_to(self,reference:str|None=None,value=None,*,attr:str|None=None):
         """
-        Changes the address which the pointer points to.\n
-        ---
-        Arguments:
-            reference (`str`|`None`, Optional): Reference pointing to the desired value. If wanted class attribute, introduce the reference for the class object.
-            value (`Any`|`None`, Optional): Value to point to. If wanted class attribute, introduce just the class object.
-            attr (`str`|`None`, Optional): Attribute of the class if class object was passed through `reference` or `value`.
+        Changes the address which the pointer points to.
+        
+        Arguments
+        ---------
+        reference : `str`|`None`, Optional
+            Reference pointing to the desired value. If wanted class attribute, introduce the reference for the class object.
+        value : `Any`|`None`, Optional
+            Value to point to. If wanted class attribute, introduce just the class object.
+        attr : `str`|`None`, Optional
+            Attribute of the class if class object was passed through `reference` or `value`.
         """
         if not reference and not value:
             pass
@@ -150,10 +177,12 @@ class Pointer(Generic[PT]):
     # Switch reference
     def switch_ref(self,reference:str):
         """
-        Allows to switch between references pointing to the same current value of the pointer.\n
-        ---
-        Arguments:
-            reference (`str`): Reference to switch the pointer to.
+        Allows to switch between references pointing to the same current value of the pointer.
+        
+        Arguments
+        ---------
+        reference : `str`
+            Reference to switch the pointer to.
         """
         if reference in self._vars_dict and self._vars_dict[reference] is not self.value:
             raise ValueError(f"Name \"{reference}\" doesn't point to pointer's value \"{self.value}\"")
@@ -168,6 +197,7 @@ class Pointer(Generic[PT]):
         """
         refs=[key for key,v in self._vars_dict.items() if v is self._value]
         refs=refs if len(refs)!=0 else [None]
+        print(refs)
     
     #* PROPERTIES
     # Value
